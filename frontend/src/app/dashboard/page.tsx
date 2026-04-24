@@ -2,11 +2,11 @@
 import { useAuth } from '@/lib/AuthContext';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { CheckCircle, Crown, User, BookOpen, Clock, PenTool } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, Suspense } from 'react';
 import Link from 'next/link';
 import { toast } from 'react-hot-toast';
 
-export default function Dashboard() {
+function DashboardContent() {
   const { user, loading, token } = useAuth();
   const searchParams = useSearchParams();
   const router = useRouter();
@@ -149,5 +149,13 @@ export default function Dashboard() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function Dashboard() {
+  return (
+    <Suspense fallback={<div className="py-20 text-center opacity-50">Loading...</div>}>
+      <DashboardContent />
+    </Suspense>
   );
 }
