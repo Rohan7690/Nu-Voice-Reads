@@ -121,7 +121,7 @@ export default function StoryView() {
                     <span className="text-[8px] text-white">✓</span>
                   </div>
                 </div>
-                <p className="text-xs md:text-sm text-white/40 font-medium">Apr 24, 2026 • 7 min read</p>
+                <p className="text-xs md:text-sm text-white/40 font-medium">{new Date(story.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })} • {story.readingTime} min read</p>
               </div>
             </div>
           </div>
@@ -185,7 +185,7 @@ export default function StoryView() {
                     </div>
                     <div className="flex-1 overflow-hidden">
                       <h5 className="text-sm font-bold truncate group-hover:text-primary transition-colors leading-tight mb-1">{s.title}</h5>
-                      <p className="text-[10px] opacity-30 uppercase font-bold tracking-tighter">Apr 24 • 5 min read</p>
+                      <p className="text-[10px] opacity-30 uppercase font-bold tracking-tighter">{new Date(s.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })} • {s.readingTime} min read</p>
                     </div>
                   </div>
                 </Link>

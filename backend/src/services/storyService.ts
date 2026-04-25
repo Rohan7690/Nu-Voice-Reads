@@ -2,13 +2,30 @@ import { storyRepository } from '../repositories/StoryRepository';
 import { IStory } from '../models/Story';
 
 export class StoryService {
+  private calculateReadingTime(content: string): number {
+    const wordsPerMinute = 225;
+    // Strip HTML tags and count words
+    const text = content.replace(/<[^>]*>?/gm, '');
+    const wordCount = text.trim().split(/\s+/).length;
+    return Math.max(1, Math.ceil(wordCount / wordsPerMinute));
+  }
+
   async getStories(page: number, limit: number, filter = {}, search?: string, sortConfig: Record<string, any> = { createdAt: -1 }) {
-    return storyRepository.findPaginated(page, limit, filter, search, sortConfig);
+    const data = await storyRepository.findPaginated(page, limit, filter, search, sortConfig);
+    return {
+      ...data,
+      stories: data.stories.map(story => ({
+        ...story.toObject(),
+        readingTime: this.calculateReadingTime(story.content)
+      }))
+    };
   }
 
   async getStoryById(id: string, requestUserId?: string, requestUserIsPremium?: boolean) {
     const story = await storyRepository.findById(id);
     if (!story) return null;
+
+    const readingTime = this.calculateReadingTime(story.content);
 
     // Check Premium Logic
     if (story.isPremium) {
@@ -19,6 +36,7 @@ export class StoryService {
           ...story.toObject(),
           content: 'This is a premium story. Please subscribe to read the full content.',
           locked: true,
+          readingTime
         };
       }
     }
@@ -26,6 +44,7 @@ export class StoryService {
     return {
       ...story.toObject(),
       locked: false,
+      readingTime
     };
   }
 

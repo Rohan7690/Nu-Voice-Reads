@@ -52,28 +52,52 @@ async function seed() {
     // Create Dummy Stories
     await Story.create([
       {
-        title: 'The Future of AI',
-        description: 'An exploration of how artificial intelligence will shape our next decade.',
-        content: 'Artificial intelligence is no longer a thing of the future. It is here, transforming industries from healthcare to finance. In this essay, we look at the ethical implications and the vast potential for creative collaboration between humans and machines...',
+        title: 'The Silent Architecture of Tomorrow',
+        description: 'How AI is silently rebuilding the world around us through invisible systems.',
+        content: `
+          <p>The transition into the age of artificial intelligence hasn't happened with a bang, but with a series of quiet, persistent whispers. We often look for AI in humanoid robots or talking interfaces, but its most profound impact is in the "silent architecture"—the background systems that manage our power grids, optimize our logistics, and predict our needs before we even voice them.</p>
+          <p>Imagine a city where traffic lights aren't on timers, but are living nodes in a neural network that breathes with the flow of commuters. Imagine a healthcare system where diagnosis starts months before symptoms appear, based on subtle shifts in metabolic data. This is not the future; it is the infrastructure currently being laid beneath our feet.</p>
+          <h2>The Ethical Blueprint</h2>
+          <p>As we build these systems, we must ask: who holds the keys to the architecture? Transparency in algorithmic decision-making is no longer a luxury; it is a fundamental requirement for a free society. If the foundations of our digital world are opaque, the structures we build upon them will always be unstable.</p>
+          <p>In this deep dive, we explore the innovators who are prioritizing human-centric design in the most invisible of places. From energy-efficient data centers to bias-resistant hiring platforms, the architecture of tomorrow is being built today, one line of code at a time.</p>
+        `,
         author: alice._id,
         isPremium: false,
-        likes: 120
+        coverImage: '/ai.png',
+        likes: 1240
       },
       {
-        title: 'A Night in Tokyo (Premium)',
-        description: 'A fictional short story about a mysterious encounter in Shinjuku.',
-        content: 'The neon lights of Shinjuku reflected off the damp pavement. Kenji adjusted his collar, the cool mist of the midnight rain settling on his skin. He was late for the meeting at Golden Gai, a meeting that would change his life forever...',
+        title: 'Echoes in the Emerald Thicket',
+        description: 'A gripping short story of a researcher who discovers something ancient in the deep woods.',
+        content: `
+          <p>The mist in the Emerald Thicket was different today—heavier, smelling of wet earth and something metallic, like old coins. Elias adjusted his pack, the strap digging into his shoulder. He had been tracking the acoustic anomalies for three weeks, and today, the signal was finally clear.</p>
+          <p>"Can you hear that?" he whispered into his recorder. The only response was the rhythmic drip of water from the canopy. But then, a low hum vibrated through his boots. It wasn't a sound; it was a physical presence, a frequency that shouldn't exist in a natural forest.</p>
+          <blockquote>"The forest doesn't just have eyes; it has a heartbeat."</blockquote>
+          <p>He pushed through a wall of ferns and stopped dead. In the center of a clearing stood a structure that defied every law of archaeology. It was seamless, made of a material that swallowed the light around it. It looked as if it had grown from the ground like a tree, yet its symmetry was mathematical, perfect, and terrifying.</p>
+          <p>As Elias reached out to touch the cold, dark surface, the humming stopped. The forest went silent. And then, the door began to open.</p>
+        `,
         author: alice._id,
         isPremium: true,
-        likes: 85
+        coverImage: '/forest.png',
+        likes: 852
       },
       {
-        title: 'The Art of Minimalist Living',
-        description: 'Practical tips for decluttering your home and your mind.',
-        content: 'Minimalism isn\'t just about owning less stuff. It\'s about making room for more life. By removing the physical and mental clutter that distracts us, we can focus on the things that truly matter: relationships, experiences, and personal growth...',
-        author: bob._id, // Bob decided to write one too
+        title: 'The Geometry of Focus',
+        description: 'Finding clarity in a world of digital chaos through intentional minimalism.',
+        content: `
+          <p>We live in an era of "infinite scrolling," where the horizon of content is always receding. Our attention has become the most valuable commodity on Earth, and it is being harvested at an industrial scale. To fight back, we don't need faster devices; we need better boundaries.</p>
+          <p>Minimalism is often misunderstood as an aesthetic of emptiness. In reality, it is an aesthetic of <strong>essentialism</strong>. It is the process of stripping away the "noise" so that the "signal" can finally be heard. When we clear our desks, we are really clearing our minds.</p>
+          <ul>
+            <li><strong>Digital Fasting:</strong> Set specific hours where screens are forbidden.</li>
+            <li><strong>Monotasking:</strong> Focus on one deep task for 90 minutes.</li>
+            <li><strong>Curated Inputs:</strong> Be as selective with your information as you are with your food.</li>
+          </ul>
+          <p>Clarity is a choice. By designing our physical and digital spaces with intention, we create a sanctuary for deep work and genuine reflection. The geometry of focus is not about the space we leave empty, but about the quality of the life we put into the space that remains.</p>
+        `,
+        author: bob._id,
         isPremium: false,
-        likes: 45
+        coverImage: '/minimalist.png',
+        likes: 450
       }
     ]);
 

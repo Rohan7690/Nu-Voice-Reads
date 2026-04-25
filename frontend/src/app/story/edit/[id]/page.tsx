@@ -122,7 +122,7 @@ export default function EditStory() {
               disabled={loading}
               className="btn-primary py-2.5 px-6 rounded-2xl text-sm flex items-center gap-2 shadow-xl shadow-primary/20 disabled:opacity-50 font-black"
             >
-              {loading ? 'Updating...' : 'Update Story'} <ChevronDown className="w-4 h-4" />
+              {loading ? 'Updating...' : 'Update Story'}
             </button>
           </div>
         </div>

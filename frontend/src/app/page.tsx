@@ -144,7 +144,7 @@ export default function Home() {
                       <div className="flex flex-col">
                         <span className="text-xs font-bold text-white">By {story.author.name}</span>
                         <span className="text-[9px] opacity-40 font-bold uppercase tracking-widest mt-0.5">
-                          {new Date(story.createdAt).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }).toUpperCase()} • 5 MIN READ
+                          {new Date(story.createdAt).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }).toUpperCase()} • {story.readingTime} MIN READ
                         </span>
                       </div>
                     </div>
