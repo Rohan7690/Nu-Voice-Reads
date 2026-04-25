@@ -15,6 +15,7 @@ export default function CreateStory() {
   const [isPremium, setIsPremium] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [uploadingImage, setUploadingImage] = useState(false);
 
   const { token, user, loading: authLoading } = useAuth();
   const router = useRouter();
@@ -29,9 +30,50 @@ export default function CreateStory() {
     return <div className="py-20 text-center opacity-50 animate-pulse">Checking authentication...</div>;
   }
 
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (!process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME || process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME === 'your_cloud_name') {
+      toast.error('Please configure Cloudinary credentials in .env.local');
+      return;
+    }
+
+    setUploadingImage(true);
+    const formData = new FormData();
+    formData.append('file', file);
+    formData.append('upload_preset', process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET || '');
+
+    try {
+      const res = await fetch(
+        `https://api.cloudinary.com/v1_1/${process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}/image/upload`,
+        {
+          method: 'POST',
+          body: formData,
+        }
+      );
+      const data = await res.json();
+      if (data.secure_url) {
+        setCoverImage(data.secure_url);
+        toast.success('Image uploaded successfully!');
+      } else {
+        toast.error('Upload failed: ' + (data.error?.message || 'Check Cloudinary settings'));
+      }
+    } catch (err) {
+      toast.error('Error connecting to Cloudinary');
+    } finally {
+      setUploadingImage(false);
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!token) return;
+
+    if (uploadingImage) {
+      toast.error('Please wait for image upload to complete');
+      return;
+    }
 
     // Premium validation
     if (isPremium && !user?.isPremium) {
@@ -129,7 +171,12 @@ export default function CreateStory() {
             <div className="space-y-2">
               <label className="text-xs font-black uppercase tracking-[0.2em] opacity-40 ml-1">Cover Image (optional)</label>
               <div className="w-full h-44 bg-white/[0.02] border-2 border-dashed border-white/10 rounded-[32px] flex flex-col items-center justify-center gap-3 group hover:border-primary/50 transition-all cursor-pointer overflow-hidden relative">
-                {coverImage ? (
+                {uploadingImage ? (
+                  <div className="flex flex-col items-center gap-2">
+                    <div className="w-8 h-8 border-2 border-primary border-t-transparent rounded-full animate-spin" />
+                    <p className="text-[10px] font-bold opacity-40">Uploading to Cloudinary...</p>
+                  </div>
+                ) : coverImage ? (
                   <img src={coverImage} className="absolute inset-0 w-full h-full object-cover brightness-50" />
                 ) : (
                   <>
@@ -142,20 +189,12 @@ export default function CreateStory() {
                 <input
                   type="file"
                   accept="image/*"
-                  onChange={(e) => {
-                    const file = e.target.files?.[0];
-                    if (file) {
-                      const reader = new FileReader();
-                      reader.onloadend = () => {
-                        setCoverImage(reader.result as string);
-                      };
-                      reader.readAsDataURL(file);
-                    }
-                  }}
-                  className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                  onChange={handleImageUpload}
+                  className="absolute inset-0 w-full h-full opacity-0 cursor-pointer disabled:pointer-events-none"
+                  disabled={uploadingImage}
                 />
               </div>
-              <p className="text-[10px] opacity-30 font-bold">Recommended: 1200x630px (16:9). Images are stored directly.</p>
+              <p className="text-[10px] opacity-30 font-bold">Recommended: 1200x630px (16:9). Images are hosted on Cloudinary.</p>
             </div>
 
             <div className="space-y-2">

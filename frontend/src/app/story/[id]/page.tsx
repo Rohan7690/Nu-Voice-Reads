@@ -56,6 +56,7 @@ export default function StoryView() {
   return (
     <div className="animate-fade-in pb-20">
       <style>{`
+        .story-body { overflow-wrap: break-word; word-wrap: break-word; word-break: break-word; }
         .story-body ul { list-style-type: disc !important; padding-left: 2rem !important; margin: 1rem 0 !important; }
         .story-body ol { list-style-type: decimal !important; padding-left: 2rem !important; margin: 1rem 0 !important; }
         .story-body li { display: list-item !important; margin-bottom: 0.4rem !important; color: #f8fafc; }
@@ -68,9 +69,9 @@ export default function StoryView() {
         .story-body h2 { font-size: 1.5rem; }
         .story-body h3 { font-size: 1.25rem; }
         .story-body blockquote { border-left: 4px solid #6366f1; padding-left: 1rem; margin: 1rem 0; opacity: 0.8; }
-        .story-body pre { background: rgba(255,255,255,0.05); padding: 1rem; border-radius: 0.5rem; margin: 1rem 0; font-family: monospace; overflow-x: auto; }
+        .story-body pre { background: rgba(255,255,255,0.05); padding: 1rem; border-radius: 0.5rem; margin: 1rem 0; font-family: monospace; overflow-x: auto; max-width: 100%; white-space: pre-wrap; }
         .story-body p { margin-bottom: 1rem; }
-        .story-body img { max-width: 100%; border-radius: 0.5rem; margin: 1rem 0; }
+        .story-body img { max-width: 100%; height: auto; border-radius: 0.5rem; margin: 1rem 0; }
         .story-body a { color: #818cf8; text-decoration: underline; }
         .story-body strong { font-weight: bold; }
         .story-body em { font-style: italic; }
@@ -134,7 +135,7 @@ export default function StoryView() {
           <article>
             <div
               className={`story-body ${story.locked ? 'relative pointer-events-none select-none h-96 overflow-hidden' : ''}`}
-              style={{ fontSize: '1.125rem', lineHeight: '1.8', fontFamily: 'Georgia, serif' }}
+              style={{ fontSize: '1.125rem', lineHeight: '1.8' }}
               dangerouslySetInnerHTML={{ __html: story.content }}
             />
 

@@ -21,7 +21,7 @@ app.use(cookieParser());
 app.use('/api/webhook/stripe', express.raw({ type: 'application/json' }), webhookRoutes);
 
 // Common JSON parser
-app.use(express.json());
+app.use(express.json({ limit: '50mb' }));
 
 app.use('/api/auth', authRoutes);
 app.use('/api/stories', storyRoutes);
