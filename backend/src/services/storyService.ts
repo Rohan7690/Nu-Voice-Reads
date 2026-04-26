@@ -2,10 +2,27 @@ import { storyRepository } from '../repositories/StoryRepository';
 import { IStory } from '../models/Story';
 
 export class StoryService {
-  private calculateReadingTime(content: string): number {
+  private calculateReadingTime(content: string | any): number {
+    if (!content || typeof content !== 'string') return 1;
+
     const wordsPerMinute = 225;
-    const text = content.replace(/<[^>]*>?/gm, '');
-    const wordCount = text.trim().split(/\s+/).length;
+    
+    // 1. Remove HTML tags and replace with space
+    let text = content.replace(/<[^>]*>?/gm, ' ');
+    
+    // 2. Replace common whitespace HTML entities with standard space
+    text = text.replace(/&nbsp;|&#160;|&ensp;|&emsp;|&thinsp;/g, ' ');
+    
+    // 3. Replace any other HTML entities with a space (to be safe)
+    text = text.replace(/&[a-z0-9#]+;/gi, ' ');
+    
+    // 4. Split by any whitespace (including newlines, tabs, and Unicode spaces)
+    const words = text.trim().split(/\s+/).filter(word => word.length > 0);
+    const wordCount = words.length;
+
+    // Log to backend console so user can verify the count
+    console.log(`[ReadingTime Debug] Word count: ${wordCount}, Calculated min: ${Math.ceil(wordCount / wordsPerMinute)}`);
+
     return Math.max(1, Math.ceil(wordCount / wordsPerMinute));
   }
 

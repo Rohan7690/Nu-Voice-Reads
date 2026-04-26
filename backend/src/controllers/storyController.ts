@@ -35,11 +35,11 @@ export const storyController = {
       }
 
       const story = await storyService.createStory(
-        title, 
-        description, 
-        content, 
-        !!isPremium, 
-        req.user!.userId, 
+        title,
+        description,
+        content,
+        !!isPremium,
+        req.user!.userId,
         coverImage
       );
       res.status(201).json({ message: 'Story created', story });
@@ -50,11 +50,9 @@ export const storyController = {
 
   getStoryById: async (req: AuthRequest, res: Response) => {
     try {
-      // For single story, auth is optional but we want to check if present for premium access
       let requestUserId: string | undefined = req.user?.userId;
       let requestUserIsPremium: boolean | undefined = req.user?.isPremium;
 
-      // If the middleware wasn't applied to this route, we manually check
       if (!req.user) {
         const authHeader = req.headers.authorization;
         if (authHeader) {

@@ -2,7 +2,7 @@
 import { useAuth } from '@/lib/AuthContext';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { CheckCircle, Crown, User, BookOpen, Clock, PenTool } from 'lucide-react';
-import { useEffect, useState, Suspense } from 'react';
+import { useEffect, useState, useRef, Suspense } from 'react';
 import Link from 'next/link';
 import { api } from '@/lib/api';
 import { toast } from 'react-hot-toast';
@@ -15,16 +15,18 @@ function DashboardContent() {
   const [success, setSuccess] = useState(false);
   const [stories, setStories] = useState<any[]>([]);
   const [storiesLoading, setStoriesLoading] = useState(true);
+  const paymentHandled = useRef(false);
 
   useEffect(() => {
-    if (searchParams.get('payment') === 'success') {
+    // Guard: only run once to prevent multiple toasts/redirects
+    if (searchParams.get('payment') === 'success' && !paymentHandled.current) {
+      paymentHandled.current = true;
       setSuccess(true);
       toast.success('Payment Successful! You are now a Premium Member.', { duration: 5000 });
-      setTimeout(() => {
-        router.replace('/dashboard');
-      }, 5000);
+      // Immediately clear the query param so a refresh or re-render doesn't re-trigger this
+      router.replace('/dashboard');
     }
-  }, [searchParams, router]);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     const fetchMyStories = async () => {
