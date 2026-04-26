@@ -2,6 +2,7 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useAuth } from '@/lib/AuthContext';
+import { api } from '@/lib/api';
 import { Crown, Search, SlidersHorizontal, LayoutGrid, BookOpen, FileText, Feather, Monitor, Heart, Briefcase, MoreHorizontal, ChevronLeft, ChevronRight, Sparkles } from 'lucide-react';
 
 export default function Explore() {
@@ -38,18 +39,9 @@ export default function Explore() {
     const fetchStories = async () => {
       setLoading(true);
       try {
-        let url = `/api/stories?page=${page}&limit=${limit}&sort=${sort}`;
-        if (debouncedSearch) {
-          url += `&search=${encodeURIComponent(debouncedSearch)}`;
-        }
-
-        const res = await fetch(url);
-        const data = await res.json();
-
-        if (res.ok) {
-          setStories(data.stories);
-          setTotal(data.total);
-        }
+        const data = await api.stories.getAll(page, limit, undefined, debouncedSearch, sort);
+        setStories(data.stories);
+        setTotal(data.total);
       } catch (err) {
         console.error('Failed to fetch stories', err);
       } finally {

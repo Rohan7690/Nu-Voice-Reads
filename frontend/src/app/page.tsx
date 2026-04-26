@@ -1,8 +1,10 @@
 'use client';
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { Crown, Clock, Heart, MessageSquare, Bookmark, PenTool, BookOpen, Sparkles, LockKeyhole } from 'lucide-react';
+import { Crown, PenTool, BookOpen, Sparkles, LockKeyhole } from 'lucide-react';
 import { useAuth } from '@/lib/AuthContext';
+import { api } from '@/lib/api';
+
 
 export default function Home() {
   const [stories, setStories] = useState<any[]>([]);
@@ -14,11 +16,12 @@ export default function Home() {
   useEffect(() => {
     const fetchStories = async () => {
       setLoading(true);
-      const res = await fetch(`/api/stories?page=${page}&limit=2`);
-      const data = await res.json();
-      if (res.ok) {
+      try {
+        const data = await api.stories.getAll(page, 2);
         setStories(data.stories);
         setTotal(data.total);
+      } catch (err) {
+        console.error('Failed to fetch stories:', err);
       }
       setLoading(false);
     };

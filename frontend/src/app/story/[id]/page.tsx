@@ -2,6 +2,8 @@
 import { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { useAuth } from '@/lib/AuthContext';
+import { api } from '@/lib/api';
+
 import Link from 'next/link';
 import { Crown, LockKeyhole, Clock, BookOpen } from 'lucide-react';
 import 'react-quill-new/dist/quill.snow.css';
@@ -24,19 +26,12 @@ export default function StoryView() {
   useEffect(() => {
     const fetchStoryData = async () => {
       try {
-        const headers: any = {};
-        if (token) headers['Authorization'] = `Bearer ${token}`;
-
-        const res = await fetch(`/api/stories/${id}`, { headers });
-        const data = await res.json();
-
-        if (!res.ok) throw new Error(data.error || 'Story not found');
+        const data = await api.stories.getById(id as string);
         setStory(data);
 
         // Fetch more by author
         if (data.author?._id) {
-          const authorRes = await fetch(`/api/stories?author=${data.author._id}&limit=4`);
-          const authorData = await authorRes.json();
+          const authorData = await api.stories.getAll(1, 4, data.author._id);
           setAuthorStories((authorData.stories || []).filter((s: any) => s._id !== id));
         }
       } catch (err: any) {

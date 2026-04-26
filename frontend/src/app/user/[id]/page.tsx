@@ -3,6 +3,8 @@ import { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
 import Link from 'next/link';
 import { Book, Crown, Clock } from 'lucide-react';
+import { api } from '@/lib/api';
+
 
 export default function UserProfile() {
   const { id } = useParams();
@@ -13,13 +15,14 @@ export default function UserProfile() {
   useEffect(() => {
     const fetchUserStories = async () => {
       setLoading(true);
-      const res = await fetch(`/api/stories?author=${id}`);
-      const data = await res.json();
-      if (res.ok) {
+      try {
+        const data = await api.stories.getAll(1, 100, id as string);
         setStories(data.stories);
         if (data.stories.length > 0) {
           setUserName(data.stories[0].author.name);
         }
+      } catch (err) {
+        console.error(err);
       }
       setLoading(false);
     };

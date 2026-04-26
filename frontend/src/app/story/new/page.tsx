@@ -4,6 +4,8 @@ import { useRouter } from 'next/navigation';
 import { useAuth } from '@/lib/AuthContext';
 import Link from 'next/link';
 import { PenTool, Image as ImageIcon, Send, CheckCircle, ChevronDown, Save, Upload } from 'lucide-react';
+import { api } from '@/lib/api';
+
 import { toast } from 'react-hot-toast';
 import RichTextEditor from '@/components/RichTextEditor';
 
@@ -88,26 +90,12 @@ export default function CreateStory() {
     const loadingToast = toast.loading('Publishing story...');
 
     try {
-      const res = await fetch('/api/stories', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        },
-        body: JSON.stringify({ title, description, content, isPremium, coverImage })
-      });
-
-      if (res.ok) {
-        toast.success('Story published successfully!', { id: loadingToast });
-        router.push('/dashboard');
-      } else {
-        const data = await res.json();
-        toast.error(data.error || 'Failed to publish story', { id: loadingToast });
-        setError(data.error);
-      }
-    } catch (err) {
-      toast.error('Something went wrong. Please try again.', { id: loadingToast });
-      setError('Something went wrong. Please try again.');
+      await api.stories.create({ title, description, content, isPremium, coverImage });
+      toast.success('Story published successfully!', { id: loadingToast });
+      router.push('/dashboard');
+    } catch (err: any) {
+      toast.error(err.message || 'Failed to publish story', { id: loadingToast });
+      setError(err.message);
     } finally {
       setLoading(false);
     }

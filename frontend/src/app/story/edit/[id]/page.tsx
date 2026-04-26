@@ -4,6 +4,8 @@ import { useRouter, useParams } from 'next/navigation';
 import { useAuth } from '@/lib/AuthContext';
 import Link from 'next/link';
 import { PenTool, Image as ImageIcon, CheckCircle, ChevronDown, Upload } from 'lucide-react';
+import { api } from '@/lib/api';
+
 import { toast } from 'react-hot-toast';
 import RichTextEditor from '@/components/RichTextEditor';
 
@@ -71,27 +73,16 @@ export default function EditStory() {
 
   useEffect(() => {
     const fetchStory = async () => {
-      if (!token) return;
       try {
-        const res = await fetch(`/api/stories/${id}`, {
-          headers: {
-            'Authorization': `Bearer ${token}`
-          }
-        });
-        const data = await res.json();
-
-        if (res.ok) {
-          setTitle(data.title || '');
-          setDescription(data.description || '');
-          setContent(data.content || '');
-          setCoverImage(data.coverImage || '');
-          setIsPremium(data.isPremium || false);
-        } else {
-          setError(data.error || 'Failed to fetch story');
-          toast.error(data.error || 'Failed to fetch story');
-        }
-      } catch (err) {
-        setError('Something went wrong fetching the story.');
+        const data = await api.stories.getById(id);
+        setTitle(data.title || '');
+        setDescription(data.description || '');
+        setContent(data.content || '');
+        setCoverImage(data.coverImage || '');
+        setIsPremium(data.isPremium || false);
+      } catch (err: any) {
+        setError(err.message || 'Failed to fetch story');
+        toast.error(err.message || 'Failed to fetch story');
       } finally {
         setFetching(false);
       }
@@ -120,26 +111,12 @@ export default function EditStory() {
     const loadingToast = toast.loading('Updating story...');
 
     try {
-      const res = await fetch(`/api/stories/${id}`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        },
-        body: JSON.stringify({ title, description, content, isPremium, coverImage })
-      });
-
-      if (res.ok) {
-        toast.success('Story updated successfully!', { id: loadingToast });
-        router.push('/dashboard');
-      } else {
-        const data = await res.json();
-        toast.error(data.error || 'Failed to update story', { id: loadingToast });
-        setError(data.error);
-      }
-    } catch (err) {
-      toast.error('Something went wrong. Please try again.', { id: loadingToast });
-      setError('Something went wrong. Please try again.');
+      await api.stories.update(id, { title, description, content, isPremium, coverImage });
+      toast.success('Story updated successfully!', { id: loadingToast });
+      router.push('/dashboard');
+    } catch (err: any) {
+      toast.error(err.message || 'Failed to update story', { id: loadingToast });
+      setError(err.message);
     } finally {
       setLoading(false);
     }

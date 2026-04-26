@@ -4,7 +4,9 @@ import { useSearchParams, useRouter } from 'next/navigation';
 import { CheckCircle, Crown, User, BookOpen, Clock, PenTool } from 'lucide-react';
 import { useEffect, useState, Suspense } from 'react';
 import Link from 'next/link';
+import { api } from '@/lib/api';
 import { toast } from 'react-hot-toast';
+
 
 function DashboardContent() {
   const { user, loading, token } = useAuth();
@@ -29,9 +31,8 @@ function DashboardContent() {
       if (user) {
         setStoriesLoading(true);
         try {
-          const res = await fetch(`/api/stories?author=${user.id}`);
-          const data = await res.json();
-          if (res.ok) setStories(data.stories);
+          const data = await api.stories.getAll(1, 100, user.id);
+          setStories(data.stories);
         } catch (err) {
           console.error(err);
         } finally {

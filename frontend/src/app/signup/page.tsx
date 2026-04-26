@@ -1,6 +1,8 @@
 'use client';
 import { useState } from 'react';
 import Link from 'next/link';
+import { api } from '@/lib/api';
+
 
 import { toast } from 'react-hot-toast';
 
@@ -17,19 +19,13 @@ export default function Signup() {
     
     const loadingToast = toast.loading('Creating account...');
 
-    const res = await fetch('/api/auth/signup', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ name, email, password }),
-    });
-
-    const data = await res.json();
-    if (!res.ok) {
-      toast.error(data.error || 'Signup failed', { id: loadingToast });
-      setError(data.error || 'Signup failed');
-    } else {
+    try {
+      await api.auth.signup({ name, email, password });
       toast.success('Account created successfully!', { id: loadingToast });
       setSuccess(true);
+    } catch (err: any) {
+      toast.error(err.message || 'Signup failed', { id: loadingToast });
+      setError(err.message || 'Signup failed');
     }
   };
 

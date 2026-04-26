@@ -4,6 +4,8 @@ import { CheckCircle2, Loader2 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import Script from 'next/script';
+import { api } from '@/lib/api';
+
 
 export default function Pricing() {
   const { user, token, loading } = useAuth();
@@ -23,13 +25,7 @@ export default function Pricing() {
     setProcessing(true);
     try {
       // 1. Create order on backend
-      const res = await fetch('/api/checkout', {
-        method: 'POST',
-        headers: { 'Authorization': `Bearer ${token}` }
-      });
-      const data = await res.json();
-
-      if (!res.ok) throw new Error(data.error || 'Failed to create order');
+      const data = await api.checkout.createOrder();
 
       // 2. Open Razorpay Modal
       const options = {
@@ -41,15 +37,11 @@ export default function Pricing() {
         order_id: data.orderId,
         handler: async function (response: any) {
           // 1. Manually notify backend since webhook won't work on localhost
-          await fetch('/api/checkout/verify', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              orderId: response.razorpay_order_id,
-              paymentId: response.razorpay_payment_id,
-              signature: response.razorpay_signature,
-              email: user.email
-            })
+          await api.checkout.verify({
+            orderId: response.razorpay_order_id,
+            paymentId: response.razorpay_payment_id,
+            signature: response.razorpay_signature,
+            email: user.email
           });
 
           // 2. Update local state so UI reflects changes

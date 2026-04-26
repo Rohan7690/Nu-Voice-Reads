@@ -1,6 +1,8 @@
 'use client';
 import { createContext, useContext, useEffect, useState } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
+import { api } from './api';
+
 
 interface User {
   id: string;
@@ -45,14 +47,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         }
 
         // Try getting new token if local storage is missing but HTTP cookie exists
-        const res = await fetch('/api/auth/refresh', { method: 'POST' });
-        if (res.ok) {
-          const data = await res.json();
+        try {
+          const data = await api.auth.refresh();
           setToken(data.accessToken);
           localStorage.setItem('accessToken', data.accessToken);
-          // Wait, user data isn't returned by refresh strictly, we rely on local, but we should decode JWT in reality
-          // For simplicity we trust local user state if token refreshes
-        } else {
+        } catch (err) {
           // Refresh failed, clear
           setToken(null);
           setUser(null);
@@ -77,10 +76,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const logout = async () => {
     if (token) {
-      await fetch('/api/auth/logout', { 
-        method: 'POST',
-        headers: { 'Authorization': `Bearer ${token}` }
-      });
+      try {
+        await api.auth.logout();
+      } catch (err) {
+        console.error('Logout request failed:', err);
+      }
     }
     setToken(null);
     setUser(null);

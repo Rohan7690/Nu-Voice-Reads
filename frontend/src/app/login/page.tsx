@@ -2,6 +2,8 @@
 import { useState } from 'react';
 import { useAuth } from '@/lib/AuthContext';
 import Link from 'next/link';
+import { api } from '@/lib/api';
+
 
 import { toast } from 'react-hot-toast';
 
@@ -17,22 +19,16 @@ export default function Login() {
     
     const loadingToast = toast.loading('Logging in...');
 
-    const res = await fetch('/api/auth/login', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email, password }),
-    });
-
-    const data = await res.json();
-    if (!res.ok) {
-      toast.error(data.error || 'Login failed', { id: loadingToast });
-      setError(data.error || 'Login failed');
-    } else {
+    try {
+      const data = await api.auth.login({ email, password });
       toast.success('Logged in successfully!', { id: loadingToast });
       login(data.accessToken, data.user);
       const params = new URLSearchParams(window.location.search);
       const redirectUrl = params.get('redirect') || '/';
       window.location.href = redirectUrl;
+    } catch (err: any) {
+      toast.error(err.message || 'Login failed', { id: loadingToast });
+      setError(err.message || 'Login failed');
     }
   };
 
