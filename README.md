@@ -12,7 +12,7 @@ NuVoice Reads is a modern, premium reading platform built for authors and reader
 ### ✍️ Content Creation (Story System)
 *   **Rich Text Editor**: A custom-built editor (Quill) allowing for professional formatting, blockquotes, and code snippets.
 *   **Cloudinary Integration**: Automatic image hosting. When you upload a cover or insert an image into an article, it is instantly hosted on Cloudinary to keep the database light.
-*   **Publishing Workflow**: Authors can create, draft, and edit their stories with ease.
+*   **Publishing Workflow**: Authors can create and edit their stories with ease.
 
 ### 💰 Monetization & Premium Access
 *   **Razorpay Integration**: Fully functional payment gateway for purchasing premium access.
