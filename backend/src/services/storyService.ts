@@ -4,7 +4,6 @@ import { IStory } from '../models/Story';
 export class StoryService {
   private calculateReadingTime(content: string): number {
     const wordsPerMinute = 225;
-    // Strip HTML tags and count words
     const text = content.replace(/<[^>]*>?/gm, '');
     const wordCount = text.trim().split(/\s+/).length;
     return Math.max(1, Math.ceil(wordCount / wordsPerMinute));
@@ -60,11 +59,11 @@ export class StoryService {
   }
 
   async updateStory(id: string, updateData: Partial<IStory>, authorId: string) {
-     const story = await storyRepository.findById(id);
-     if (!story) throw new Error('Story not found');
-     if (story.author._id.toString() !== authorId) throw new Error('Not authorized to edit this story');
+    const story = await storyRepository.findById(id);
+    if (!story) throw new Error('Story not found');
+    if (story.author._id.toString() !== authorId) throw new Error('Not authorized to edit this story');
 
-     return storyRepository.update(id, updateData);
+    return storyRepository.update(id, updateData);
   }
 }
 

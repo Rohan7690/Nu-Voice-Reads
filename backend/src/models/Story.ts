@@ -8,7 +8,6 @@ export interface IStory extends Document {
   author: mongoose.Types.ObjectId | IUser;
   coverImage?: string;
   isPremium: boolean;
-  likes: number;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -21,7 +20,6 @@ const storySchema = new Schema<IStory>(
     coverImage: { type: String },
     author: { type: Schema.Types.ObjectId, ref: 'User', required: true },
     isPremium: { type: Boolean, default: false },
-    likes: { type: Number, default: 0 },
   },
   { timestamps: true }
 );
